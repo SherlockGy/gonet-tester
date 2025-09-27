@@ -54,7 +54,7 @@ func performTcpTest(u *url.URL) (TraceResult, error) {
 	if err != nil {
 		return result, err
 	}
-	conn.Close() // 连接成功后立即关闭
+	_ = conn.Close() // 连接成功后立即关闭
 	result.TCPConnection = time.Since(start)
 	result.Total = result.TCPConnection // 对于纯TCP测试，总耗时即TCP连接耗时
 	return result, nil
@@ -104,7 +104,9 @@ func performFullTrace(u *url.URL, client *http.Client) (TraceResult, error) {
 	if err != nil {
 		return result, err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(resp.Body)
 
 	// 读取并丢弃响应体，这是为了完整地计算内容传输时间
 	_, err = io.Copy(io.Discard, resp.Body)
