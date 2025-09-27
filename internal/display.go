@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"fmt"
@@ -11,8 +11,8 @@ import (
 // displaySingleRun 以美观、可视化的格式显示单次运行的结果。
 // r: 单次测试的结果。
 // testType: 当前执行的测试类型 ("all", "dns", "tcp")。
-func displaySingleRun(r TraceResult, testType string) {
-	color := timingColor(r.Total, 200*time.Millisecond, 1*time.Second)
+func DisplaySingleRun(r TraceResult, testType string) {
+	color := TimingColor(r.Total, 200*time.Millisecond, 1*time.Second)
 	fmt.Printf("%s✓ %s分析%s\n", ColorGreen, strings.ToUpper(testType), ColorReset)
 
 	totalNanos := float64(r.Total.Nanoseconds())
@@ -27,7 +27,7 @@ func displaySingleRun(r TraceResult, testType string) {
 			ratio := float64(d.Nanoseconds()) / totalNanos
 			barWidth := int(math.Ceil(ratio * 20)) // 20是条形图的最大宽度字符数
 			bar := strings.Repeat("█", barWidth)
-			c := timingColor(d, 100*time.Millisecond, 500*time.Millisecond)
+			c := TimingColor(d, 100*time.Millisecond, 500*time.Millisecond)
 			fmt.Printf("├─ %-15s [%-20s] %s%8.2f ms%s\n", name, bar, c, float64(d.Milliseconds()), ColorReset)
 		}
 	}
@@ -58,7 +58,7 @@ func displaySingleRun(r TraceResult, testType string) {
 // displaySummary 以摘要的形式显示多次运行的统计结果。
 // results: 包含所有测试运行结果的切片。
 // testType: 当前执行的测试类型。
-func displaySummary(results []TraceResult, testType string) {
+func DisplaySummary(results []TraceResult, testType string) {
 	fmt.Printf("%s✓ 测试结果汇总 (共 %d 次运行)%s\n\n", ColorGreen, len(results), ColorReset)
 
 	// printStats 是一个内部辅助函数，用于计算并打印单个指标的统计数据。
@@ -66,8 +66,8 @@ func displaySummary(results []TraceResult, testType string) {
 		if len(times) < 1 {
 			return // 如果没有数据则不打印
 		}
-		stats := calculateStats(times)
-		c := timingColor(stats.Avg, 100*time.Millisecond, 500*time.Millisecond)
+		stats := CalculateStats(times)
+		c := TimingColor(stats.Avg, 100*time.Millisecond, 500*time.Millisecond)
 
 		var runsMs []string
 		for _, r := range stats.AllRuns {
@@ -131,7 +131,7 @@ func displaySummary(results []TraceResult, testType string) {
 // d: 耗时。
 // good: 低于此时长为“快”，显示绿色。
 // bad: 高于此时长为“慢”，显示红色。
-func timingColor(d, good, bad time.Duration) string {
+func TimingColor(d, good, bad time.Duration) string {
 	if d < good {
 		return ColorGreen
 	}
@@ -142,6 +142,6 @@ func timingColor(d, good, bad time.Duration) string {
 }
 
 // printError 以标准错误格式打印红色的错误信息。
-func printError(msg string) {
+func PrintError(msg string) {
 	fmt.Fprintf(os.Stderr, "%s✗ 错误: %s%s\n", ColorRed, msg, ColorReset)
 }

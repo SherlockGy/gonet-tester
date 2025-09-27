@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	"gonet-tester/internal"
 )
 
 // main 是程序的入口函数
@@ -16,7 +18,7 @@ func main() {
 
 	// 自定义用法说明
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "%s用法: gonet-tester [参数] <url>%s\n", ColorBold, ColorReset)
+		fmt.Fprintf(os.Stderr, "%s用法: gonet-tester [参数] <url>%s\n", internal.ColorBold, internal.ColorReset)
 		fmt.Fprintf(os.Stderr, "示例: gonet-tester -http -n 5 google.com\n\n")
 		fmt.Fprintf(os.Stderr, "参数:\n")
 		flag.PrintDefaults()
@@ -32,40 +34,40 @@ func main() {
 
 	// --- 2. URL处理 ---
 	// 调用辅助函数规范化URL
-	parsedURL, err := normalizeURL(flag.Args()[0], *httpFlag)
+	parsedURL, err := internal.NormalizeURL(flag.Args()[0], *httpFlag)
 	if err != nil {
-		printError(err.Error())
+		internal.PrintError(err.Error())
 		os.Exit(1)
 	}
 
-	fmt.Printf("\n%s正在对 %s 进行 %d 次 %s 测试...%s\n\n", ColorBold, parsedURL.String(), *runCount, *testType, ColorReset)
+	fmt.Printf("\n%s正在对 %s 进行 %d 次 %s 测试...%s\n\n", internal.ColorBold, parsedURL.String(), *runCount, *testType, internal.ColorReset)
 
 	// --- 3. 执行测试循环 ---
-	var results []TraceResult
+	var results []internal.TraceResult
 	// 创建一个可复用的HTTP客户端
-	client := createHttpClient()
+	client := internal.CreateHttpClient()
 
 	for i := 0; i < *runCount; i++ {
-		var result TraceResult
+		var result internal.TraceResult
 		var err error
 
 		// 根据测试类型，调用不同的核心测试函数
 		switch *testType {
 		case "dns":
-			result, err = performDnsTest(parsedURL)
+			result, err = internal.PerformDnsTest(parsedURL)
 		case "tcp":
-			result, err = performTcpTest(parsedURL)
+			result, err = internal.PerformTcpTest(parsedURL)
 		case "all":
-			result, err = performFullTrace(parsedURL, client)
+			result, err = internal.PerformFullTrace(parsedURL, client)
 		default:
-			printError(fmt.Sprintf("无效的测试类型: %s. 合法值是: all, dns, tcp.", *testType))
+			internal.PrintError(fmt.Sprintf("无效的测试类型: %s. 合法值是: all, dns, tcp.", *testType))
 			os.Exit(1)
 		}
 
 		// 处理单次运行的错误
 		if err != nil {
 			// 修正: 使用 %v 而不是 %%v
-			printError(fmt.Sprintf("第 %d 次测试失败: %v", i+1, err))
+			internal.PrintError(fmt.Sprintf("第 %d 次测试失败: %v", i+1, err))
 			// 如果是完全失败，则跳过此次结果
 			if result.Total == 0 {
 				continue
@@ -77,15 +79,15 @@ func main() {
 	// 如果所有测试都失败了，则退出
 	if len(results) == 0 {
 		// 修正: 移除错误的希伯来字符
-		printError("所有测试均失败。\n")
+		internal.PrintError("所有测试均失败。\n")
 		os.Exit(1)
 	}
 
 	// --- 4. 显示结果 ---
 	// 根据运行次数，调用不同的显示函数
 	if *runCount == 1 {
-		displaySingleRun(results[0], *testType)
+		internal.DisplaySingleRun(results[0], *testType)
 	} else {
-		displaySummary(results, *testType)
+		internal.DisplaySummary(results, *testType)
 	}
 }

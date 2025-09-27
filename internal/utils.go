@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 // normalizeURL 规范化用户输入的URL，进行严格检查，并根据参数决定协议头。
 // rawURL: 用户输入的原始URL字符串。
 // useHTTP: 是否在没有协议头时优先使用http。
-func normalizeURL(rawURL string, useHTTP bool) (*url.URL, error) {
+func NormalizeURL(rawURL string, useHTTP bool) (*url.URL, error) {
 	rawURL = strings.TrimSpace(rawURL)
 	if rawURL == "" {
 		return nil, fmt.Errorf("无效的URL: 输入为空")
@@ -53,7 +53,7 @@ func normalizeURL(rawURL string, useHTTP bool) (*url.URL, error) {
 
 // createHttpClient 创建并配置一个可复用的http.Client。
 // 此处禁用了连接复用(Keep-Alive)，以确保每次测试都是一个全新的连接，从而保证测试结果的准确性。
-func createHttpClient() *http.Client {
+func CreateHttpClient() *http.Client {
 	transport := &http.Transport{
 		Proxy:                 http.ProxyFromEnvironment,
 		DisableKeepAlives:     true, // 关键：禁用连接复用，确保每次测试的独立性
@@ -75,7 +75,7 @@ func createHttpClient() *http.Client {
 
 // calculateStats 计算一组时间数据的最小、最大和平均值。
 // runs: 包含多次运行耗时的切片。
-func calculateStats(runs []time.Duration) Statistics {
+func CalculateStats(runs []time.Duration) Statistics {
 	if len(runs) == 0 {
 		return Statistics{}
 	}

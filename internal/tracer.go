@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"context"
@@ -14,7 +14,7 @@ import (
 
 // performDnsTest 执行纯DNS查询测试。
 // u: 已解析的URL对象，函数将使用其主机名进行DNS查询。
-func performDnsTest(u *url.URL) (TraceResult, error) {
+func PerformDnsTest(u *url.URL) (TraceResult, error) {
 	var result TraceResult
 	start := time.Now()
 	ips, err := net.LookupHost(u.Hostname())
@@ -29,7 +29,7 @@ func performDnsTest(u *url.URL) (TraceResult, error) {
 
 // performTcpTest 执行纯TCP连接测试。
 // u: 已解析的URL对象，函数将根据其协议和主机名进行TCP连接。
-func performTcpTest(u *url.URL) (TraceResult, error) {
+func PerformTcpTest(u *url.URL) (TraceResult, error) {
 	var result TraceResult
 	port := u.Port()
 	// 如果URL中没有指定端口，则根据协议使用默认端口
@@ -63,7 +63,7 @@ func performTcpTest(u *url.URL) (TraceResult, error) {
 // performFullTrace 使用httptrace执行完整的HTTP生命周期跟踪。
 // u: 已解析的URL对象。
 // client: 一个配置好的、可复用的http.Client实例。
-func performFullTrace(u *url.URL, client *http.Client) (TraceResult, error) {
+func PerformFullTrace(u *url.URL, client *http.Client) (TraceResult, error) {
 	var result TraceResult
 	// 声明用于记录各个阶段开始和结束时间的变量
 	var dnsStart, dnsDone, connStart, connDone, tlsStart, tlsDone, gotFirstByte, reqStart time.Time
