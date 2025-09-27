@@ -117,15 +117,36 @@ func main() {
 	}
 }
 
-// normalizeURL 规范化用户输入的URL，如果缺少协议头则自动添加https
+// normalizeURL 规范化用户输入的URL，进行更严格的检查
 func normalizeURL(rawURL string) (*url.URL, error) {
-	if !strings.HasPrefix(rawURL, "http://") && !strings.HasPrefix(rawURL, "https://") {
+	rawURL = strings.TrimSpace(rawURL)
+	if rawURL == "" {
+		return nil, fmt.Errorf("无效的URL: 输入为空")
+	}
+
+	// 修复：处理协议相对URL (e.g., "//google.com")
+	if strings.HasPrefix(rawURL, "//") {
+		rawURL = "https:" + rawURL
+	}
+
+	// 如果仍然没有协议头，则添加一个
+	if !strings.Contains(rawURL, "://") {
 		rawURL = "https://" + rawURL
 	}
+
 	parsedURL, err := url.Parse(rawURL)
-	if err != nil || parsedURL.Host == "" {
-		return nil, fmt.Errorf("无效的URL: %s", rawURL)
+	if err != nil {
+		return nil, fmt.Errorf("无效的URL: 解析失败 - %s (%w)", rawURL, err)
 	}
+
+	if parsedURL.Scheme != "http" && parsedURL.Scheme != "https" {
+		return nil, fmt.Errorf("无效的URL: 仅支持http和https协议 (检测到: %s)", parsedURL.Scheme)
+	}
+
+	if parsedURL.Host == "" {
+		return nil, fmt.Errorf("无效的URL: 缺少主机名 - %s", rawURL)
+	}
+
 	return parsedURL, nil
 }
 
