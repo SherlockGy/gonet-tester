@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// displaySingleRun 以美观、可视化的格式显示单次运行的结果。
+// DisplaySingleRun 以美观、可视化的格式显示单次运行的结果。
 // r: 单次测试的结果。
 // testType: 当前执行的测试类型 ("all", "dns", "tcp")。
 func DisplaySingleRun(r TraceResult, testType string) {
@@ -55,7 +55,7 @@ func DisplaySingleRun(r TraceResult, testType string) {
 	}
 }
 
-// displaySummary 以摘要的形式显示多次运行的统计结果。
+// DisplaySummary 以摘要的形式显示多次运行的统计结果。
 // results: 包含所有测试运行结果的切片。
 // testType: 当前执行的测试类型。
 func DisplaySummary(results []TraceResult, testType string) {
@@ -127,7 +127,7 @@ func DisplaySummary(results []TraceResult, testType string) {
 	}
 }
 
-// timingColor 根据耗时返回不同的颜色，用于在视觉上区分响应速度。
+// TimingColor 根据耗时返回不同的颜色，用于在视觉上区分响应速度。
 // d: 耗时。
 // good: 低于此时长为“快”，显示绿色。
 // bad: 高于此时长为“慢”，显示红色。
@@ -141,7 +141,7 @@ func TimingColor(d, good, bad time.Duration) string {
 	return ColorRed
 }
 
-// printError 以标准错误格式打印红色的错误信息。
+// PrintError 以标准错误格式打印红色的错误信息。
 func PrintError(msg string) {
-	fmt.Fprintf(os.Stderr, "%s✗ 错误: %s%s\n", ColorRed, msg, ColorReset)
+	_, _ = fmt.Fprintf(os.Stderr, "%s✗ 错误: %s%s\n", ColorRed, msg, ColorReset)
 }

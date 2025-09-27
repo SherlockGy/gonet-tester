@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// performDnsTest 执行纯DNS查询测试。
+// PerformDnsTest 执行纯DNS查询测试。
 // u: 已解析的URL对象，函数将使用其主机名进行DNS查询。
 func PerformDnsTest(u *url.URL) (TraceResult, error) {
 	var result TraceResult
@@ -27,7 +27,7 @@ func PerformDnsTest(u *url.URL) (TraceResult, error) {
 	return result, nil
 }
 
-// performTcpTest 执行纯TCP连接测试。
+// PerformTcpTest 执行纯TCP连接测试。
 // u: 已解析的URL对象，函数将根据其协议和主机名进行TCP连接。
 func PerformTcpTest(u *url.URL) (TraceResult, error) {
 	var result TraceResult
@@ -60,7 +60,7 @@ func PerformTcpTest(u *url.URL) (TraceResult, error) {
 	return result, nil
 }
 
-// performFullTrace 使用httptrace执行完整的HTTP生命周期跟踪。
+// PerformFullTrace 使用httptrace执行完整的HTTP生命周期跟踪。
 // u: 已解析的URL对象。
 // client: 一个配置好的、可复用的http.Client实例。
 func PerformFullTrace(u *url.URL, client *http.Client) (TraceResult, error) {
