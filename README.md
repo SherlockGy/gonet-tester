@@ -42,6 +42,7 @@ go build
 
 - `-n <次数>`: 指定测试运行的次数 (默认为 `1`)。
 - `-test <类型>`: 指定要运行的测试类型。可选值为 `all`, `dns`, `tcp` (默认为 `all`)。
+- `-http`: 对于不带协议的域名，优先使用 `http` 而非 `https`。
 
 ### 使用示例
 
@@ -61,13 +62,19 @@ go build
 
 *输出将是这 10 次 DNS 查询的统计摘要，包含每次运行的耗时、平均值、最小值和最大值。*
 
-**3. 只运行 TCP 连接测试 5 次：**
+**3. 使用http协议对域名进行测试：**
+
+```bash
+./gonet-tester -http example.com
+```
+
+**4. 只运行 TCP 连接测试 5 次：**
 
 ```bash
 ./gonet-tester -n 5 -test=tcp apple.com
 ```
 
-**4. 运行 3 次完整的分析：**
+**5. 运行 3 次完整的分析：**
 
 ```bash
 ./gonet-tester -n 3 https://github.com
