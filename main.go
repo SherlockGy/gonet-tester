@@ -105,7 +105,7 @@ func main() {
 	}
 
 	if len(results) == 0 {
-		printError("所有测试均失败。 ולאחר מכן נצא מהתוכנית.")
+		printError("所有测试均失败。")
 		os.Exit(1)
 	}
 
